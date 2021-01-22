@@ -18,9 +18,8 @@ if __name__ == '__main__':
 #In this game, we have to click the red line on the top to shoot balls. When the ball hits the board, you win.
 import pygame
 
-#Board Class
 class Board:
-    #board defination
+    """The board is at the bottom and can bounce back if touch the left/right side"""
     def __init__(self,width,height,color):
         self.x = 0
         self.y = 0
@@ -35,9 +34,9 @@ class Board:
     def render(self,screen):
         pygame.draw.rect(screen,self.color,(self.x,self.y,self.width,self.height))
 
-#ball class
+
 class Ball:
-    #ball defination
+    """The ball can be thrown by the user at the top and hit the board"""
     def __init__(self,radius,color):
         self.x = 0
         self.y = 0
@@ -53,6 +52,7 @@ class Ball:
 
 
 def throw_game():
+    # game initialization
     pygame.init()
     SCREEN_COLOR=(111,111,111)
     SCREEN_WIDTH=800
@@ -63,6 +63,8 @@ def throw_game():
     BALL_SPEED_Y=40
     BALL_START_HEIGHT = 50
     screen = pygame.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT))
+
+    # Game title
     pygame.display.set_caption("Throw Game")
     screen.fill(SCREEN_COLOR)
     board = Board(40,10,(255,0,0))
@@ -71,6 +73,7 @@ def throw_game():
     line.move(0,BALL_START_HEIGHT)
     ballList = []
 
+    # add ball to the screen when user clicking
     def addBall():
         if len(ballList) < 10:
             x,y = pygame.mouse.get_pos()
@@ -87,18 +90,26 @@ def throw_game():
                 if event.type == pygame.QUIT:#closing the windows
                     running = False
             continue
+
+        # set tick time 100ms
         pygame.time.delay(100)
+
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:#closing the windows
                 running = False
             elif event.type == pygame.MOUSEBUTTONDOWN:
+                # when user clicks, add a new ball on the screen
                 addBall()
 
+        # check board movement, if it hits side, bounce back
         if board.x > SCREEN_WIDTH - board.width or board.x < 0:
             BOARD_SPEED_X*=-1
         board.move(BOARD_SPEED_X)
         board.render(screen)
         line.render(screen)
+
+        # render balls
         for index in range(len(ballList)-1,-1,-1):
             ball = ballList[index]
             if ball.y > SCREEN_HEIGHT:
@@ -109,12 +120,6 @@ def throw_game():
             if ball.x >= board.x - ball.radius*2 and ball.x <= board.x + board.width and \
                     ball.y >= board.y - ball.radius*2 and ball.y <= board.y + board.height:
                 isWin = True
-                pygame.font.init()
-                myfont = pygame.font.SysFont("Comic Sans MS", 30)
-                #display gameover
-                text_surface = myfont.render("Game Over", False, (0,0,0))
-                screen.blit(text_surface,(200,200))
-                pygame.display.flip()
 
         pygame.display.update()
         screen.fill(SCREEN_COLOR)
