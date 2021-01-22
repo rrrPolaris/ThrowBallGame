@@ -82,6 +82,7 @@ def throw_game():
                 ball.move(x,y)
                 ballList.append(ball)
 
+    ## if user win, stop the game.
     running = True
     isWin = False
     while running:
@@ -120,6 +121,12 @@ def throw_game():
             if ball.x >= board.x - ball.radius*2 and ball.x <= board.x + board.width and \
                     ball.y >= board.y - ball.radius*2 and ball.y <= board.y + board.height:
                 isWin = True
+
+                pygame.font.init()
+                myfont = pygame.font.SysFont("Comic Sans MS", 30)
+                text_surface = myfont.render("Game Over", False, (0, 0, 0))
+                screen.blit(text_surface, (200, 200))
+                pygame.display.flip()
 
         pygame.display.update()
         screen.fill(SCREEN_COLOR)
